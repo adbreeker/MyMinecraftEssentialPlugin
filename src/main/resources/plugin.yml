@@ -1,0 +1,5 @@
+name: MyMinecraftEssential
+version: '${project.version}'
+main: myminecraftessential.myminecraftessential.MyMinecraftEssential
+api-version: 1.19
+description: Adam00Ch's essential plugin for playing minecraft
