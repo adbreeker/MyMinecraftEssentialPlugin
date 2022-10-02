@@ -1,6 +1,7 @@
 package myminecraftessential.myminecraftessential.items;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class ArrowManager
         lore.add("Causes explosion on impact");
         meta.setLore(lore);
         item.setItemMeta(meta);
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+        potionMeta.setColor(Color.RED);
+        item.setItemMeta(potionMeta);
         ExplosiveArrow = item;
 
         ShapedRecipe new_explosive_arrow = new ShapedRecipe(NamespacedKey.minecraft("explosivve_arrow"),ExplosiveArrow);
@@ -56,6 +61,9 @@ public class ArrowManager
         lore.add("Teleporting user to arrow impact point");
         meta.setLore(lore);
         item.setItemMeta(meta);
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+        potionMeta.setColor(Color.PURPLE);
+        item.setItemMeta(potionMeta);
         TeleportArrow = item;
 
         ShapedRecipe new_teleport_arrow = new ShapedRecipe(NamespacedKey.minecraft("teleport_arrow"),TeleportArrow);
@@ -76,6 +84,9 @@ public class ArrowManager
         lore.add("Extinguishing near fire and lava on impact");
         meta.setLore(lore);
         item.setItemMeta(meta);
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+        potionMeta.setColor(Color.BLUE);
+        item.setItemMeta(potionMeta);
         ExtinguishingArrow = item;
 
         ShapedRecipe new_extinguishing_arrow = new ShapedRecipe(NamespacedKey.minecraft("extinguishing_arrow"),ExtinguishingArrow);
