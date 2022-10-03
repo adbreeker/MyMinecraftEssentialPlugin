@@ -12,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -33,7 +35,7 @@ public class ArrowShoot implements Listener
             boolean allreadyShoot = false;
             Player player = (Player) event.getEntity();
             Quiver quiver = new Quiver(player.getUniqueId().toString());
-            if(event.getBow().getItemMeta().getLore().get(0).split(": ")[0].equals("Selected Arrow"))
+            if(event.getBow().getItemMeta().getLore().get(0).split(": ")[0].equals("§7Selected Arrow"))
             {
                 for(ItemStack arrow_in_quiver : quiver.getInventory())
                 {
@@ -67,6 +69,18 @@ public class ArrowShoot implements Listener
                                 allreadyShoot = true;
                                 break;
                             }
+                            if(PrisonArrow(event, arrow_in_quiver, player, quiver))
+                            {
+                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                allreadyShoot = true;
+                                break;
+                            }
+                            if(FrostArrow(event, arrow_in_quiver, player, quiver))
+                            {
+                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                allreadyShoot = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -83,6 +97,14 @@ public class ArrowShoot implements Listener
                     return;
                 }
                 if(ExtinguishingArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(PrisonArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(FrostArrow(event, event.getConsumable(), player, quiver))
                 {
                     return;
                 }
@@ -112,7 +134,7 @@ public class ArrowShoot implements Listener
             if(noArrows)
             {
                 List<String> lore = new ArrayList<>();
-                lore.add("Selected Arrow: None");
+                lore.add("§7Selected Arrow: None");
                 event.getBow().setLore(lore);
             }
         }
@@ -257,7 +279,7 @@ public class ArrowShoot implements Listener
                                 {
                                     for(int z = radius*(-1); z<=radius; z++)
                                     {
-                                        Block block = arrow_loc.getWorld().getBlockAt(arrow_loc.getBlockX()+x, arrow_loc.getBlockZ()+y, arrow_loc.getBlockZ()+z);
+                                        Block block = arrow_loc.getWorld().getBlockAt(arrow_loc.getBlockX()+x, arrow_loc.getBlockY()+y, arrow_loc.getBlockZ()+z);
                                         if(block.getType() == Material.FIRE)
                                         {
                                             block.setType(Material.AIR);
@@ -283,4 +305,193 @@ public class ArrowShoot implements Listener
         }
         return false;
     }
+
+    public boolean PrisonArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.PrisonArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.PrisonArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+                arrow.setVelocity(event.getProjectile().getVelocity());
+                event.setProjectile(arrow);
+                arrow.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 20*30, 4, true, true), true);
+                arrow.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 20*5, 5, true, true), true);
+                BukkitTask task = new BukkitRunnable()
+                {
+                    Location arrow_loc = event.getProjectile().getLocation();
+
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            makePrison(arrow_loc.getBlock().getLocation());
+                            arrow.remove();
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void makePrison(Location c)
+    {
+        World w = c.getWorld();
+        List<Block> blocks = new ArrayList<>();
+        for(int y = -2; y<=2; y++)
+        {
+            if(y == -2 || y == 2)
+            {
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-2));
+            }
+            else
+            {
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-3));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-3));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-3));
+
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-2));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-2));
+
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-2));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-2));
+            }
+        }
+
+        for(Block block : blocks)
+        {
+            if(!block.isSolid())
+            {
+                if(block.getY() == c.getBlockY())
+                {
+                    block.setType(Material.IRON_BARS);
+                }
+                else
+                {
+                    if((block.getY() == c.getBlockY()+2 || block.getY() == c.getBlockY()-2) && block.getX() == c.getBlockX() && block.getZ() == c.getBlockZ())
+                    {
+                        block.setType(Material.GLOWSTONE);
+                    }
+                    else
+                    {
+                        block.setType(Material.OBSIDIAN);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean FrostArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.FrostArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.FrostArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+                arrow.setVelocity(event.getProjectile().getVelocity());
+                event.setProjectile(arrow);
+                arrow.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 20*20, 5, true, true), true);
+                BukkitTask task = new BukkitRunnable()
+                {
+                    Location arrow_loc = event.getProjectile().getLocation();
+
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc) || arrow.isInWater())
+                        {
+                            for(Entity entity : arrow.getNearbyEntities(3,3,3))
+                            {
+                                if(entity instanceof LivingEntity)
+                                {
+                                    Location el = entity.getLocation();
+                                    for(int x = -1; x<=1; x++)
+                                    {
+                                        for(int y = -1; y<=1; y++)
+                                        {
+                                            for(int z = -1; z<=1; z++)
+                                            {
+                                                Block block = entity.getWorld().getBlockAt(el.getBlockX()+x, el.getBlockY()+y, el.getBlockZ()+z);
+                                                if(!block.isSolid())
+                                                {
+                                                    block.setType(Material.ICE);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            int radius = 4;
+                            for(int x = radius*(-1); x<=radius; x++)
+                            {
+                                for(int y = radius*(-1); y<=radius; y++)
+                                {
+                                    for(int z = radius*(-1); z<=radius; z++)
+                                    {
+                                        Block block = arrow_loc.getWorld().getBlockAt(arrow_loc.getBlockX()+x, arrow_loc.getBlockY()+y, arrow_loc.getBlockZ()+z);
+                                        if(block.getType() == Material.WATER)
+                                        {
+                                            block.setType(Material.ICE);
+                                        }
+                                    }
+                                }
+                            }
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

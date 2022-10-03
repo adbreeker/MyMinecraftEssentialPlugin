@@ -39,18 +39,18 @@ public class QuiverSelectArrow implements Listener
 
                         if(event.getCurrentItem().getItemMeta().getDisplayName()!= "")
                         {
-                            lore.add("Selected Arrow: " + event.getCurrentItem().getItemMeta().getDisplayName());
+                            lore.add("§7Selected Arrow: " + event.getCurrentItem().getItemMeta().getDisplayName());
                         }
                         else
                         {
                             if(event.getCurrentItem().getType() == Material.TIPPED_ARROW)
                             {
                                 PotionMeta meta = (PotionMeta) event.getCurrentItem().getItemMeta();
-                                lore.add("Selected Arrow: " + meta.getBasePotionData().getType().toString());
+                                lore.add("§7Selected Arrow: " + meta.getBasePotionData().getType().toString());
                             }
                             else
                             {
-                                lore.add("Selected Arrow: " + event.getCurrentItem().getType());
+                                lore.add("§7Selected Arrow: " + event.getCurrentItem().getType());
                             }
                         }
 
