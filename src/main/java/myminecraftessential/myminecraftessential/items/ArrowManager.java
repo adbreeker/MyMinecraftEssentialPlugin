@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class ArrowManager
 {
-    public static ItemStack ExplosiveArrow, TeleportArrow, ExtinguishingArrow, PrisonArrow, FrostArrow;
+    public static ItemStack ExplosiveArrow, TeleportArrow, ExtinguishingArrow, PrisonArrow, FrostArrow, HomingArrow;
 
     public static void init_items()
     {
@@ -26,6 +26,7 @@ public class ArrowManager
         createExtinguishingArrow();
         createPrisonArrow();
         createFrostArrow();
+        createHomingArrow();
     }
 
     // electric Lamp ------------------------------------------------------------------------------------------------------------------------- electric lamp
@@ -143,6 +144,29 @@ public class ArrowManager
         new_frost_arrow.setIngredient('I',Material.ICE);
         new_frost_arrow.setIngredient('A',Material.ARROW);
         Bukkit.getServer().addRecipe(new_frost_arrow);
+    }
+
+    private static void createHomingArrow()
+    {
+        ItemStack item = new ItemStack(Material.TIPPED_ARROW, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§fHoming Arrow");
+        meta.addEnchant(Enchantment.LUCK, 1, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        List <String> lore = new ArrayList<>();
+        lore.add("§fFollowing entities after shoot");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+        potionMeta.setColor(Color.WHITE);
+        item.setItemMeta(potionMeta);
+        HomingArrow = item;
+
+        ShapedRecipe new_homing_arrow = new ShapedRecipe(NamespacedKey.minecraft("homing_arrow"),HomingArrow);
+        new_homing_arrow.shape(" C ", " A ", "   ");
+        new_homing_arrow.setIngredient('C',Material.COMPASS);
+        new_homing_arrow.setIngredient('A',Material.ARROW);
+        Bukkit.getServer().addRecipe(new_homing_arrow);
     }
 
 }

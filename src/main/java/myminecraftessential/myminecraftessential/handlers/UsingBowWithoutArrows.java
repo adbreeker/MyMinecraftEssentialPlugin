@@ -21,15 +21,18 @@ public class UsingBowWithoutArrows implements Listener
     {
         if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction()==Action.RIGHT_CLICK_BLOCK)
         {
-            if(event.getHand() == EquipmentSlot.HAND && event.getItem().getType() == Material.BOW)
+            if(event.getHand() == EquipmentSlot.HAND && event.getItem() != null)
             {
-                ItemStack ofhand = event.getPlayer().getInventory().getItemInOffHand();
-                if(ofhand.getType() != Material.ARROW && ofhand.getType() != Material.TIPPED_ARROW && ofhand.getType() != Material.SPECTRAL_ARROW)
+                if(event.getItem().getType() == Material.BOW)
                 {
-                    Inventory inv = event.getPlayer().getInventory();
-                    if(!inv.contains(Material.ARROW) && !inv.contains(Material.TIPPED_ARROW) && !inv.contains(Material.SPECTRAL_ARROW))
+                    ItemStack offhand = event.getPlayer().getInventory().getItemInOffHand();
+                    if(offhand.getType() != Material.ARROW && offhand.getType() != Material.TIPPED_ARROW && offhand.getType() != Material.SPECTRAL_ARROW)
                     {
-                        event.getPlayer().sendMessage("§cYou can't use bow without at least one arrow in your inventory");
+                        Inventory inv = event.getPlayer().getInventory();
+                        if(!inv.contains(Material.ARROW) && !inv.contains(Material.TIPPED_ARROW) && !inv.contains(Material.SPECTRAL_ARROW))
+                        {
+                            event.getPlayer().sendMessage("§cYou can't use bow without at least one arrow in your inventory");
+                        }
                     }
                 }
             }
