@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -151,40 +152,94 @@ public class ArrowShoot implements Listener
         }
     }
 
-    public void setArrow(EntityShootBowEvent event, String arrowType, PotionData data)
+    public void setArrow(EntityShootBowEvent event, String arrowType, PotionData data, List<PotionEffect> effects, Color color)
     {
         if(arrowType == "normal")
         {
-            if(!(event.getProjectile() instanceof Arrow))
+            Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+            arrow.setShooter(event.getEntity());
+            arrow.setVelocity(event.getProjectile().getVelocity());
+            if(event.getProjectile() instanceof Arrow)
             {
-                Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-                arrow.setVelocity(event.getProjectile().getVelocity());
-                event.setProjectile(arrow);
+                Arrow pom = (Arrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
             }
-            else
+            if(event.getProjectile() instanceof SpectralArrow)
             {
-                if(((Arrow) event.getProjectile()).getBasePotionData() != null)
-                {
-                    Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-                    arrow.setVelocity(event.getProjectile().getVelocity());
-                    event.setProjectile(arrow);
-                }
+                SpectralArrow pom = (SpectralArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
             }
+            if(color != null)
+            {
+                arrow.setColor(color);
+            }
+            event.setProjectile(arrow);
         }
         if(arrowType == "spectral")
         {
-            if(!(event.getProjectile() instanceof SpectralArrow))
+            SpectralArrow arrow = (SpectralArrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.SPECTRAL_ARROW);
+            arrow.setShooter(event.getEntity());
+            arrow.setVelocity(event.getProjectile().getVelocity());
+            if(event.getProjectile() instanceof Arrow)
             {
-                SpectralArrow arrow = (SpectralArrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.SPECTRAL_ARROW);
-                arrow.setVelocity(event.getProjectile().getVelocity());
-                event.setProjectile(arrow);
+                Arrow pom = (Arrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
             }
+            if(event.getProjectile() instanceof SpectralArrow)
+            {
+                SpectralArrow pom = (SpectralArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            event.setProjectile(arrow);
         }
-        if(arrowType == "tipped" && data != null)
+        if(arrowType == "tipped" && (data != null || effects != null))
         {
             Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+            arrow.setShooter(event.getEntity());
             arrow.setVelocity(event.getProjectile().getVelocity());
-            arrow.setBasePotionData(data);
+            if(event.getProjectile() instanceof Arrow)
+            {
+                Arrow pom = (Arrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            if(event.getProjectile() instanceof SpectralArrow)
+            {
+                SpectralArrow pom = (SpectralArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            if(data != null)
+            {
+                arrow.setBasePotionData(data);
+            }
+            if(effects != null)
+            {
+                for(PotionEffect effect : effects)
+                {
+                    arrow.addCustomEffect(effect, true);
+                }
+            }
+            if(color != null)
+            {
+                arrow.setColor(color);
+            }
             event.setProjectile(arrow);
         }
     }
@@ -198,7 +253,7 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                setArrow(event, "normal", null);
+                setArrow(event, "normal", null, null, null);
                 return true;
             }
             if(arrow_in_quiver.getType() == Material.SPECTRAL_ARROW)
@@ -206,7 +261,7 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                setArrow(event, "spectral", null);
+                setArrow(event, "spectral", null, null, null);
                 return true;
             }
         }
@@ -220,7 +275,7 @@ public class ArrowShoot implements Listener
                     event.setConsumeItem(false);
                     arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                     Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                    setArrow(event, "tipped", meta.getBasePotionData());
+                    setArrow(event, "tipped", meta.getBasePotionData(), null, null);
                     return true;
                 }
             }
@@ -237,7 +292,8 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                Entity arrow = event.getProjectile();
+                setArrow(event, "normal", null, null, Color.RED);
+                Arrow arrow = (Arrow) event.getProjectile();
                 BukkitTask task = new BukkitRunnable() {
                     Location arrow_loc = event.getProjectile().getLocation();
                      @Override
@@ -305,7 +361,9 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                Entity arrow = event.getProjectile();
+                setArrow(event, "normal", null, null, Color.BLUE);
+                Arrow arrow = (Arrow) event.getProjectile();
+                arrow.setFireTicks(0);
                 BukkitTask task = new BukkitRunnable()
                 {
                     Location arrow_loc = event.getProjectile().getLocation();
@@ -362,11 +420,14 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-                arrow.setVelocity(event.getProjectile().getVelocity());
-                event.setProjectile(arrow);
-                arrow.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 20*30, 4, true, true), true);
-                arrow.addCustomEffect(new PotionEffect(PotionEffectType.REGENERATION, 20*5, 5, true, true), true);
+                List<PotionEffect> effects = new ArrayList<>();
+                effects.add(new PotionEffect(PotionEffectType.SLOW, 20*30, 4, true, true));
+                effects.add(new PotionEffect(PotionEffectType.REGENERATION, 20*10, 5, true, true));
+                setArrow(event, "tipped", null, effects, Color.GRAY);
+                Arrow arrow = (Arrow) event.getProjectile();
+                arrow.setDamage(0.0);
+                arrow.setKnockbackStrength(0);
+
                 BukkitTask task = new BukkitRunnable()
                 {
                     Location arrow_loc = event.getProjectile().getLocation();
@@ -477,10 +538,13 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-                arrow.setVelocity(event.getProjectile().getVelocity());
-                event.setProjectile(arrow);
-                arrow.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 20*20, 5, true, true), true);
+                List<PotionEffect> effects = new ArrayList<>();
+                effects.add(new PotionEffect(PotionEffectType.SLOW, 20*15, 5, true, true));
+                setArrow(event, "tipped", null, effects, Color.AQUA);
+                Arrow arrow = (Arrow) event.getProjectile();
+                arrow.setFireTicks(0);
+                arrow.setKnockbackStrength(0);
+
                 BukkitTask task = new BukkitRunnable()
                 {
                     Location arrow_loc = event.getProjectile().getLocation();
@@ -488,20 +552,42 @@ public class ArrowShoot implements Listener
                     @Override
                     public void run()
                     {
-                        if(arrow.getLocation().equals(arrow_loc) || arrow.isInWater())
+                        if(arrow.getLocation().equals(arrow_loc) || (arrow.isInWater() && !arrow.isInRain()))
                         {
-                            for(Entity entity : arrow.getNearbyEntities(3,3,3))
+                            for(Entity entity : arrow.getNearbyEntities(2,2,2))
                             {
                                 if(entity instanceof LivingEntity)
                                 {
-                                    Location el = entity.getLocation();
-                                    for(int x = -1; x<=1; x++)
+                                    new BukkitRunnable()
                                     {
-                                        for(int y = -1; y<=1; y++)
+                                        @Override
+                                        public void run()
                                         {
-                                            for(int z = -1; z<=1; z++)
+                                            Location el;
+                                            el = entity.getLocation();
+                                            List<Block> blocks = new ArrayList<>();
+                                            for(int x = -1; x<=1; x++)
                                             {
-                                                Block block = entity.getWorld().getBlockAt(el.getBlockX()+x, el.getBlockY()+y, el.getBlockZ()+z);
+                                                for(int y = 0; y<=2; y++)
+                                                {
+                                                    for(int z = -1; z<=1; z++)
+                                                    {
+                                                        blocks.add(entity.getWorld().getBlockAt(el.getBlockX()+x, el.getBlockY()+y, el.getBlockZ()+z));
+                                                    }
+                                                }
+                                            }
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX()+2, el.getBlockY(), el.getBlockZ()));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX()+2, el.getBlockY()+1, el.getBlockZ()));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX()-2, el.getBlockY(), el.getBlockZ()));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX()-2, el.getBlockY()+1, el.getBlockZ()));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX(), el.getBlockY(), el.getBlockZ()+2));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX(), el.getBlockY()+1, el.getBlockZ()+2));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX(), el.getBlockY(), el.getBlockZ()-2));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX(), el.getBlockY()+1, el.getBlockZ()-2));
+                                            blocks.add(entity.getWorld().getBlockAt(el.getBlockX(), el.getBlockY()+3, el.getBlockZ()));
+
+                                            for(Block block : blocks)
+                                            {
                                                 if(!block.isSolid())
                                                 {
                                                     block.setType(Material.ICE);
@@ -516,7 +602,7 @@ public class ArrowShoot implements Listener
                                                 }
                                             }
                                         }
-                                    }
+                                    }.runTaskLater(plugin, 10);
                                 }
                             }
 
@@ -577,10 +663,14 @@ public class ArrowShoot implements Listener
         {
             if(arrow_in_quiver.getItemMeta().equals(ArrowManager.HomingArrow.getItemMeta()))
             {
+                double multiply = event.getProjectile().getVelocity().length();
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                Entity arrow = event.getProjectile();
+                setArrow(event, "normal", null, null, Color.WHITE);
+                Arrow arrow = (Arrow) event.getProjectile();
+                arrow.setDamage(arrow.getDamage()+2.0);
+
                 BukkitTask task = new BukkitRunnable()
                 {
                     Location arrow_loc = event.getProjectile().getLocation();
@@ -592,7 +682,7 @@ public class ArrowShoot implements Listener
                     {
                         if(!targetSelected)
                         {
-                            for(Entity potential: arrow.getNearbyEntities(3,10, 3))
+                            for(Entity potential: arrow.getNearbyEntities(4,4, 4))
                             {
                                 if(potential != event.getEntity() && potential instanceof LivingEntity)
                                 {
@@ -605,7 +695,8 @@ public class ArrowShoot implements Listener
                         if(target != null && !target.isDead())
                         {
                             arrow.setVelocity(target.getLocation().toVector().subtract(arrow.getLocation().toVector()).normalize());
-                            arrow.setVelocity(arrow.getVelocity().multiply(1.5));
+                            arrow.setVelocity(arrow.getVelocity());
+                            arrow.setVelocity(arrow.getVelocity().multiply(multiply));
                         }
                         if(arrow.getLocation().equals(arrow_loc))
                         {

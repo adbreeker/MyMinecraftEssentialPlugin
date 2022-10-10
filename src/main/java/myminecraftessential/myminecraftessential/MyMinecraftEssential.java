@@ -20,6 +20,7 @@ public final class MyMinecraftEssential extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuiverClose(this),this);
         getServer().getPluginManager().registerEvents(new QuiverSelectArrow(this),this);
         getServer().getPluginManager().registerEvents(new UsingBowWithoutArrows(this),this);
+        getServer().getPluginManager().registerEvents(new MobsHealth(this),this);
 
         ArrowManager.init_items();
 
