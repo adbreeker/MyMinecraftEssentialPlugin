@@ -37,62 +37,68 @@ public class ArrowShoot implements Listener
             boolean allreadyShoot = false;
             Player player = (Player) event.getEntity();
             Quiver quiver = new Quiver(player.getUniqueId().toString());
-            if(event.getBow().getItemMeta().getLore().get(0).split(": ")[0].equals("§7Selected Arrow"))
+            if(event.getBow().getItemMeta() != null)
             {
-                for(ItemStack arrow_in_quiver : quiver.getInventory())
+                if(event.getBow().getItemMeta().getLore() != null)
                 {
-
-                    if (arrow_in_quiver != null)
+                    if(event.getBow().getItemMeta().getLore().get(0).split(": ")[0].equals("§7Selected Arrow"))
                     {
-                        ItemStack arrowBeforeShoot = arrow_in_quiver.clone();
-                        if(NonSpecialArrow(event, arrow_in_quiver, player, quiver))
+                        for(ItemStack arrow_in_quiver : quiver.getInventory())
                         {
-                            CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                            allreadyShoot = true;
-                            break;
+
+                            if (arrow_in_quiver != null)
+                            {
+                                ItemStack arrowBeforeShoot = arrow_in_quiver.clone();
+                                if(NonSpecialArrow(event, arrow_in_quiver, player, quiver))
+                                {
+                                    CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                    allreadyShoot = true;
+                                    break;
+                                }
+                                if (arrow_in_quiver.getItemMeta().getDisplayName().equals(event.getBow().getItemMeta().getLore().get(0).split(": ")[1]))
+                                {
+                                    if(ExplosiveArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                    if(TeleportArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                    if(ExtinguishingArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                    if(PrisonArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                    if(FrostArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                    if(HomingArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        allreadyShoot = true;
+                                        break;
+                                    }
+                                }
+                            }
                         }
-                        if (arrow_in_quiver.getItemMeta().getDisplayName().equals(event.getBow().getItemMeta().getLore().get(0).split(": ")[1]))
-                        {
-                            if(ExplosiveArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                            if(TeleportArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                            if(ExtinguishingArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                            if(PrisonArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                            if(FrostArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                            if(HomingArrow(event, arrow_in_quiver, player, quiver))
-                            {
-                                CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                allreadyShoot = true;
-                                break;
-                            }
-                        }
+                        player.updateInventory();
                     }
                 }
-                player.updateInventory();
             }
             if(!allreadyShoot)
             {
