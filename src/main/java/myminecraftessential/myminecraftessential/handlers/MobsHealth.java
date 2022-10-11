@@ -19,7 +19,7 @@ public class MobsHealth implements Listener
     {
         if(event.getEntity().getCustomName() == null)
         {
-            event.getEntity().setCustomName(event.getEntityType().toString() + " §4❤§f " + event.getEntity().getHealth());
+            event.getEntity().setCustomName(event.getEntityType() + " §4❤§f " + event.getEntity().getHealth());
             event.getEntity().setCustomNameVisible(false);
         }
         else
@@ -38,7 +38,7 @@ public class MobsHealth implements Listener
             LivingEntity mob = (LivingEntity) event.getEntity();
             if(event.getEntity().getCustomName() == null)
             {
-                mob.setCustomName(mob.getType().toString() + " §4❤§f " + (mob.getHealth()-event.getDamage()));
+                mob.setCustomName(mob.getType() + " §4❤§f " + (mob.getHealth()-event.getDamage()));
                 mob.setCustomNameVisible(false);
             }
             else
@@ -58,7 +58,7 @@ public class MobsHealth implements Listener
             LivingEntity mob = (LivingEntity) event.getEntity();
             if(event.getEntity().getCustomName() == null)
             {
-                mob.setCustomName(mob.getType().toString() + " §4❤§f " + (mob.getHealth()+event.getAmount()));
+                mob.setCustomName(mob.getType() + " §4❤§f " + (mob.getHealth()+event.getAmount()));
                 mob.setCustomNameVisible(false);
             }
             else
