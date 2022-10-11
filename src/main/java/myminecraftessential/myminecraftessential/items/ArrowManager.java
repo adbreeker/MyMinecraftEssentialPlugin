@@ -20,7 +20,7 @@ import java.util.Random;
 public class ArrowManager
 {
     public static ItemStack ExplosiveArrow, TeleportArrow, ExtinguishingArrow, PrisonArrow, FrostArrow, HomingArrow,
-                            ThunderArrow, FlameArrow, TorchArrow, BurialArrow, DeathBringerArrow;
+            ThunderArrow, FlameArrow, TorchArrow, BurialArrow, DeathBringerArrow;
 
     public static void init_items()
     {
@@ -50,7 +50,7 @@ public class ArrowManager
         meta.setLore(lore);
         item.setItemMeta(meta);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setColor(Color.RED);
+        potionMeta.setColor(Color.MAROON);
         item.setItemMeta(potionMeta);
         ExplosiveArrow = item;
 
@@ -96,7 +96,7 @@ public class ArrowManager
         meta.setLore(lore);
         item.setItemMeta(meta);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setColor(Color.BLUE);
+        potionMeta.setColor(Color.TEAL);
         item.setItemMeta(potionMeta);
         ExtinguishingArrow = item;
 
@@ -181,15 +181,15 @@ public class ArrowManager
     {
         ItemStack item = new ItemStack(Material.TIPPED_ARROW, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§6Thunder Arrow");
+        meta.setDisplayName("§eThunder Arrow");
         meta.addEnchant(Enchantment.CHANNELING, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         List <String> lore = new ArrayList<>();
-        lore.add("§6Summoning lightning on impact");
+        lore.add("§eSummoning lightning on impact");
         meta.setLore(lore);
         item.setItemMeta(meta);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setColor(Color.fromRGB(0xFFAA00));
+        potionMeta.setColor(Color.YELLOW);
         item.setItemMeta(potionMeta);
         ThunderArrow = item;
 
@@ -212,7 +212,7 @@ public class ArrowManager
         meta.setLore(lore);
         item.setItemMeta(meta);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setColor(Color.ORANGE);
+        potionMeta.setColor(Color.RED);
         item.setItemMeta(potionMeta);
         FlameArrow = item;
 
@@ -227,15 +227,15 @@ public class ArrowManager
     {
         ItemStack item = new ItemStack(Material.TIPPED_ARROW, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§eTorch Arrow");
+        meta.setDisplayName("§6Torch Arrow");
         meta.addEnchant(Enchantment.FIRE_ASPECT, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         List <String> lore = new ArrayList<>();
-        lore.add("§eCreating light source during flight and on impact");
+        lore.add("§6Creating light source during flight and on impact");
         meta.setLore(lore);
         item.setItemMeta(meta);
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-        potionMeta.setColor(Color.YELLOW);
+        potionMeta.setColor(Color.ORANGE);
         item.setItemMeta(potionMeta);
         TorchArrow = item;
 
@@ -250,7 +250,7 @@ public class ArrowManager
     {
         ItemStack item = new ItemStack(Material.TIPPED_ARROW, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§2Thunder Arrow");
+        meta.setDisplayName("§2Burial Arrow");
         meta.addEnchant(Enchantment.DAMAGE_UNDEAD, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         List <String> lore = new ArrayList<>();
@@ -264,7 +264,7 @@ public class ArrowManager
 
         ShapedRecipe new_burial_arrow = new ShapedRecipe(NamespacedKey.minecraft("burial_arrow"),BurialArrow);
         new_burial_arrow.shape(" G ", " A ", "   ");
-        new_burial_arrow.setIngredient('L',Material.GRASS_BLOCK);
+        new_burial_arrow.setIngredient('G',Material.GRASS_BLOCK);
         new_burial_arrow.setIngredient('A',Material.ARROW);
         Bukkit.getServer().addRecipe(new_burial_arrow);
     }

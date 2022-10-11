@@ -34,7 +34,7 @@ public class ArrowShoot implements Listener
 
         if(event.getEntity() instanceof Player)
         {
-            boolean allreadyShoot = false;
+            boolean alreadyShoot = false;
             Player player = (Player) event.getEntity();
             Quiver quiver = new Quiver(player.getUniqueId().toString());
             if(event.getBow().getItemMeta() != null)
@@ -52,7 +52,7 @@ public class ArrowShoot implements Listener
                                 if(NonSpecialArrow(event, arrow_in_quiver, player, quiver))
                                 {
                                     CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                    allreadyShoot = true;
+                                    alreadyShoot = true;
                                     break;
                                 }
                                 if (arrow_in_quiver.getItemMeta().getDisplayName().equals(event.getBow().getItemMeta().getLore().get(0).split(": ")[1]))
@@ -60,37 +60,37 @@ public class ArrowShoot implements Listener
                                     if(ExplosiveArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                     if(TeleportArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                     if(ExtinguishingArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                     if(PrisonArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                     if(FrostArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                     if(HomingArrow(event, arrow_in_quiver, player, quiver))
                                     {
                                         CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
-                                        allreadyShoot = true;
+                                        alreadyShoot = true;
                                         break;
                                     }
                                 }
@@ -100,7 +100,7 @@ public class ArrowShoot implements Listener
                     }
                 }
             }
-            if(!allreadyShoot)
+            if(!alreadyShoot)
             {
                 if(ExplosiveArrow(event, event.getConsumable(), player, quiver))
                 {
@@ -130,125 +130,7 @@ public class ArrowShoot implements Listener
         }
     }
 
-    public void CheckArrowAmount(EntityShootBowEvent event, ItemStack arrow_in_quiver, Quiver quiver, ItemStack arrowBeforeShoot)
-    {
-        if(arrow_in_quiver.getAmount() <= 0 || arrow_in_quiver.getType() == Material.AIR)
-        {
-            boolean noArrows = true;
-            for(ItemStack item : quiver.getInventory())
-            {
-                if(item != null)
-                {
-                    if(item.getAmount() > 0)
-                    {
-                        if(item.asOne().equals(arrowBeforeShoot.asOne()))
-                        {
-                            noArrows = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            if(noArrows)
-            {
-                List<String> lore = new ArrayList<>();
-                lore.add("§7Selected Arrow: None");
-                event.getBow().setLore(lore);
-            }
-        }
-    }
-
-    public void setArrow(EntityShootBowEvent event, String arrowType, PotionData data, List<PotionEffect> effects, Color color)
-    {
-        if(arrowType == "normal")
-        {
-            Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-            arrow.setShooter(event.getEntity());
-            arrow.setVelocity(event.getProjectile().getVelocity());
-            if(event.getProjectile() instanceof Arrow)
-            {
-                Arrow pom = (Arrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            if(event.getProjectile() instanceof SpectralArrow)
-            {
-                SpectralArrow pom = (SpectralArrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            if(color != null)
-            {
-                arrow.setColor(color);
-            }
-            event.setProjectile(arrow);
-        }
-        if(arrowType == "spectral")
-        {
-            SpectralArrow arrow = (SpectralArrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.SPECTRAL_ARROW);
-            arrow.setShooter(event.getEntity());
-            arrow.setVelocity(event.getProjectile().getVelocity());
-            if(event.getProjectile() instanceof Arrow)
-            {
-                Arrow pom = (Arrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            if(event.getProjectile() instanceof SpectralArrow)
-            {
-                SpectralArrow pom = (SpectralArrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            event.setProjectile(arrow);
-        }
-        if(arrowType == "tipped" && (data != null || effects != null))
-        {
-            Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
-            arrow.setShooter(event.getEntity());
-            arrow.setVelocity(event.getProjectile().getVelocity());
-            if(event.getProjectile() instanceof Arrow)
-            {
-                Arrow pom = (Arrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            if(event.getProjectile() instanceof SpectralArrow)
-            {
-                SpectralArrow pom = (SpectralArrow) event.getProjectile();
-                arrow.setDamage(pom.getDamage());
-                arrow.setCritical(pom.isCritical());
-                arrow.setKnockbackStrength(pom.getKnockbackStrength());
-                arrow.setFireTicks(pom.getFireTicks());
-            }
-            if(data != null)
-            {
-                arrow.setBasePotionData(data);
-            }
-            if(effects != null)
-            {
-                for(PotionEffect effect : effects)
-                {
-                    arrow.addCustomEffect(effect, true);
-                }
-            }
-            if(color != null)
-            {
-                arrow.setColor(color);
-            }
-            event.setProjectile(arrow);
-        }
-    }
+    //Arrow Types ---------------------------------------------------------------------------------------------------------------------------------------------Arrow Types
 
     public boolean NonSpecialArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
     {
@@ -298,7 +180,7 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                setArrow(event, "normal", null, null, Color.RED);
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.ExplosiveArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
                 BukkitTask task = new BukkitRunnable() {
                     Location arrow_loc = event.getProjectile().getLocation();
@@ -367,7 +249,7 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                setArrow(event, "normal", null, null, Color.BLUE);
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.ExtinguishingArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
                 arrow.setFireTicks(0);
                 BukkitTask task = new BukkitRunnable()
@@ -429,7 +311,7 @@ public class ArrowShoot implements Listener
                 List<PotionEffect> effects = new ArrayList<>();
                 effects.add(new PotionEffect(PotionEffectType.SLOW, 20*30, 4, true, true));
                 effects.add(new PotionEffect(PotionEffectType.REGENERATION, 20*10, 5, true, true));
-                setArrow(event, "tipped", null, effects, Color.GRAY);
+                setArrow(event, "tipped", null, effects, ((PotionMeta) ArrowManager.PrisonArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
                 arrow.setDamage(0.0);
                 arrow.setKnockbackStrength(0);
@@ -459,81 +341,6 @@ public class ArrowShoot implements Listener
         return false;
     }
 
-    public void makePrison(Location c)
-    {
-        World w = c.getWorld();
-        List<Block> blocks = new ArrayList<>();
-        for(int y = -2; y<=2; y++)
-        {
-            if(y == -2 || y == 2)
-            {
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+2));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-2));
-            }
-            else
-            {
-                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()));
-                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+3));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+3));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+3));
-                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-3));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-3));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-3));
-
-                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-1));
-                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+1));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+2));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+2));
-                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-2));
-                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-2));
-
-                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+2));
-                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-2));
-                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+2));
-                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-2));
-            }
-        }
-
-        for(Block block : blocks)
-        {
-            if(!block.isSolid())
-            {
-                if(block.getY() == c.getBlockY())
-                {
-                    block.setType(Material.IRON_BARS);
-                }
-                else
-                {
-                    if((block.getY() == c.getBlockY()+2 || block.getY() == c.getBlockY()-2) && block.getX() == c.getBlockX() && block.getZ() == c.getBlockZ())
-                    {
-                        block.setType(Material.GLOWSTONE);
-                    }
-                    else
-                    {
-                        block.setType(Material.OBSIDIAN);
-                    }
-                }
-            }
-        }
-    }
 
     public boolean FrostArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
     {
@@ -546,7 +353,7 @@ public class ArrowShoot implements Listener
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
                 List<PotionEffect> effects = new ArrayList<>();
                 effects.add(new PotionEffect(PotionEffectType.SLOW, 20*15, 5, true, true));
-                setArrow(event, "tipped", null, effects, Color.AQUA);
+                setArrow(event, "tipped", null, effects, ((PotionMeta) ArrowManager.FrostArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
                 arrow.setFireTicks(0);
                 arrow.setKnockbackStrength(0);
@@ -673,7 +480,7 @@ public class ArrowShoot implements Listener
                 event.setConsumeItem(false);
                 arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
-                setArrow(event, "normal", null, null, Color.WHITE);
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.HomingArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
                 arrow.setDamage(arrow.getDamage()+2.0);
 
@@ -718,6 +525,180 @@ public class ArrowShoot implements Listener
             }
         }
         return false;
+    }
+
+    //Helping Functions ---------------------------------------------------------------------------------------------------------------------------------------------Helping functions
+
+    public void CheckArrowAmount(EntityShootBowEvent event, ItemStack arrow_in_quiver, Quiver quiver, ItemStack arrowBeforeShoot)
+    {
+        if(arrow_in_quiver.getAmount() <= 0 || arrow_in_quiver.getType() == Material.AIR)
+        {
+            boolean noArrows = true;
+            for(ItemStack item : quiver.getInventory())
+            {
+                if(item != null)
+                {
+                    if(item.getAmount() > 0)
+                    {
+                        if(item.asOne().equals(arrowBeforeShoot.asOne()))
+                        {
+                            noArrows = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(noArrows)
+            {
+                List<String> lore = new ArrayList<>();
+                lore.add("§7Selected Arrow: None");
+                event.getBow().setLore(lore);
+            }
+        }
+    }
+
+    public void setArrow(EntityShootBowEvent event, String arrowType, PotionData data, List<PotionEffect> effects, Color color)
+    {
+        if(arrowType == "normal")
+        {
+            Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+            arrow.setShooter(event.getEntity());
+            arrow.setVelocity(event.getProjectile().getVelocity());
+            if(event.getProjectile() instanceof AbstractArrow)
+            {
+                AbstractArrow pom = (AbstractArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            if(color != null)
+            {
+                arrow.setColor(color);
+            }
+            event.setProjectile(arrow);
+        }
+        if(arrowType == "spectral")
+        {
+            SpectralArrow arrow = (SpectralArrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.SPECTRAL_ARROW);
+            arrow.setShooter(event.getEntity());
+            arrow.setVelocity(event.getProjectile().getVelocity());
+            if(event.getProjectile() instanceof AbstractArrow)
+            {
+                AbstractArrow pom = (AbstractArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            event.setProjectile(arrow);
+        }
+        if(arrowType == "tipped" && (data != null || effects != null))
+        {
+            Arrow arrow = (Arrow) event.getProjectile().getWorld().spawnEntity(event.getProjectile().getLocation(), EntityType.ARROW);
+            arrow.setShooter(event.getEntity());
+            arrow.setVelocity(event.getProjectile().getVelocity());
+            if(event.getProjectile() instanceof AbstractArrow)
+            {
+                AbstractArrow pom = (AbstractArrow) event.getProjectile();
+                arrow.setDamage(pom.getDamage());
+                arrow.setCritical(pom.isCritical());
+                arrow.setKnockbackStrength(pom.getKnockbackStrength());
+                arrow.setFireTicks(pom.getFireTicks());
+            }
+            if(data != null)
+            {
+                arrow.setBasePotionData(data);
+            }
+            if(effects != null)
+            {
+                for(PotionEffect effect : effects)
+                {
+                    arrow.addCustomEffect(effect, true);
+                }
+            }
+            if(color != null)
+            {
+                arrow.setColor(color);
+            }
+            event.setProjectile(arrow);
+        }
+    }
+
+    public void makePrison(Location c)
+    {
+        World w = c.getWorld();
+        List<Block> blocks = new ArrayList<>();
+        for(int y = -2; y<=2; y++)
+        {
+            if(y == -2 || y == 2)
+            {
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-2));
+            }
+            else
+            {
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+3, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-3, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+3));
+                blocks.add(w.getBlockAt(c.getBlockX(), c.getBlockY()+y, c.getBlockZ()-3));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-3));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-3));
+
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-1));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+1));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()+1, c.getBlockY()+y, c.getBlockZ()-2));
+                blocks.add(w.getBlockAt(c.getBlockX()-1, c.getBlockY()+y, c.getBlockZ()-2));
+
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()+2, c.getBlockY()+y, c.getBlockZ()-2));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()+2));
+                blocks.add(w.getBlockAt(c.getBlockX()-2, c.getBlockY()+y, c.getBlockZ()-2));
+            }
+        }
+
+        for(Block block : blocks)
+        {
+            if(!block.isSolid())
+            {
+                if(block.getY() == c.getBlockY())
+                {
+                    block.setType(Material.IRON_BARS);
+                }
+                else
+                {
+                    if((block.getY() == c.getBlockY()+2 || block.getY() == c.getBlockY()-2) && block.getX() == c.getBlockX() && block.getZ() == c.getBlockZ())
+                    {
+                        block.setType(Material.GLOWSTONE);
+                    }
+                    else
+                    {
+                        block.setType(Material.OBSIDIAN);
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -3,3 +3,11 @@ version: '${project.version}'
 main: myminecraftessential.myminecraftessential.MyMinecraftEssential
 api-version: 1.19
 description: Adam00Ch's essential plugin for playing minecraft
+commands:
+  MME_Items:
+    description: Open inventory with all plugin items
+    permission: op
+
+
+
+
