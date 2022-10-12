@@ -527,6 +527,225 @@ public class ArrowShoot implements Listener
         return false;
     }
 
+    public boolean ThunderArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.ThunderArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.ThunderArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.ThunderArrow.getItemMeta()).getColor());
+                Arrow arrow = (Arrow) event.getProjectile();
+                BukkitTask task = new BukkitRunnable() {
+                    Location arrow_loc = event.getProjectile().getLocation();
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            arrow_loc.getWorld().strikeLightning(arrow_loc);
+                            arrow.remove();
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean FlameArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.FlameArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.FlameArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.FlameArrow.getItemMeta()).getColor());
+                Arrow arrow = (Arrow) event.getProjectile();
+                arrow.setFireTicks(Integer.MAX_VALUE);
+                BukkitTask task = new BukkitRunnable() {
+                    Location arrow_loc = event.getProjectile().getLocation();
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            arrow_loc.getBlock().setType(Material.FIRE);
+                            arrow.remove();
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean TorchArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.TorchArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.TorchArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.TorchArrow.getItemMeta()).getColor());
+                Arrow arrow = (Arrow) event.getProjectile();
+                BukkitTask task = new BukkitRunnable() {
+                    Location arrow_loc = event.getProjectile().getLocation();
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            arrow_loc.getBlock().setType(Material.TORCH);
+                            arrow.remove();
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                            if(arrow_loc.getBlock().getType() == Material.AIR)
+                            {
+                                Block light = arrow_loc.getBlock();
+                                light.setType(Material.LIGHT);
+                                new BukkitRunnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        if(light.getType() == Material.LIGHT)
+                                        {
+                                            light.setType(Material.AIR);
+                                        }
+                                    }
+                                }.runTaskLater(plugin, 10*20);
+
+                            }
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean BurialArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.BurialArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.BurialArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.BurialArrow.getItemMeta()).getColor());
+                Arrow arrow = (Arrow) event.getProjectile();
+                BukkitTask task = new BukkitRunnable() {
+                    Location arrow_loc = event.getProjectile().getLocation();
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            for(Entity mob : arrow_loc.getNearbyEntities(1,1,1))
+                            {
+                                if(mob instanceof LivingEntity)
+                                {
+                                    List<Block> blocks = new ArrayList<>();
+                                    for(int x=-1; x<=1; x++)
+                                    {
+                                        for(int y=-3; y<=0; y++)
+                                        {
+                                            for(int z=-1; z<=1; z++)
+                                            {
+                                                Block block = mob.getLocation().getWorld().getBlockAt(mob.getLocation().getBlockX()+x, mob.getLocation().getBlockY()+y, mob.getLocation().getBlockZ()+z);
+                                                blocks.add(block);
+                                            }
+                                        }
+                                    }
+                                    for(Block block : blocks)
+                                    {
+                                        if(block.isSolid())
+                                        {
+                                            Material material = block.getType();
+                                            block.setType(Material.AIR);
+                                            new BukkitRunnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    block.setType(material);
+                                                }
+                                            }.runTaskLater(plugin, 3*20);
+                                        }
+                                    }
+                                }
+                            }
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean DeathBringerArrow(EntityShootBowEvent event, ItemStack arrow_in_quiver, Player player, Quiver quiver)
+    {
+        if(arrow_in_quiver.getType().equals(ArrowManager.DeathBringerArrow.getType()))
+        {
+            if(arrow_in_quiver.getItemMeta().equals(ArrowManager.DeathBringerArrow.getItemMeta()))
+            {
+                event.setConsumeItem(false);
+                arrow_in_quiver.setAmount(arrow_in_quiver.getAmount() - 1);
+                Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
+                setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.DeathBringerArrow.getItemMeta()).getColor());
+                Arrow arrow = (Arrow) event.getProjectile();
+                BukkitTask task = new BukkitRunnable() {
+                    Location arrow_loc = event.getProjectile().getLocation();
+                    @Override
+                    public void run()
+                    {
+                        if(arrow.getLocation().equals(arrow_loc))
+                        {
+                            arrow.remove();
+                            cancel();
+                        }
+                        else
+                        {
+                            arrow_loc = arrow.getLocation();
+                        }
+                    }
+                }.runTaskTimer(plugin, 5, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Helping Functions ---------------------------------------------------------------------------------------------------------------------------------------------Helping functions
 
     public void CheckArrowAmount(EntityShootBowEvent event, ItemStack arrow_in_quiver, Quiver quiver, ItemStack arrowBeforeShoot)
