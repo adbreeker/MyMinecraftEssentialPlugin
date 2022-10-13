@@ -6,6 +6,7 @@ import myminecraftessential.myminecraftessential.inventories.Quiver;
 import myminecraftessential.myminecraftessential.items.ArrowManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +95,36 @@ public class ArrowShoot implements Listener
                                         alreadyShoot = true;
                                         break;
                                     }
+                                    if(ThunderArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        alreadyShoot = true;
+                                        break;
+                                    }
+                                    if(FlameArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        alreadyShoot = true;
+                                        break;
+                                    }
+                                    if(TorchArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        alreadyShoot = true;
+                                        break;
+                                    }
+                                    if(BurialArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        alreadyShoot = true;
+                                        break;
+                                    }
+                                    if(DeathBringerArrow(event, arrow_in_quiver, player, quiver))
+                                    {
+                                        CheckArrowAmount(event, arrow_in_quiver, quiver, arrowBeforeShoot);
+                                        alreadyShoot = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -123,6 +155,26 @@ public class ArrowShoot implements Listener
                     return;
                 }
                 if(HomingArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(ThunderArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(FlameArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(TorchArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(BurialArrow(event, event.getConsumable(), player, quiver))
+                {
+                    return;
+                }
+                if(DeathBringerArrow(event, event.getConsumable(), player, quiver))
                 {
                     return;
                 }
@@ -508,7 +560,6 @@ public class ArrowShoot implements Listener
                         if(target != null && !target.isDead())
                         {
                             arrow.setVelocity(target.getLocation().toVector().subtract(arrow.getLocation().toVector()).normalize());
-                            arrow.setVelocity(arrow.getVelocity());
                             arrow.setVelocity(arrow.getVelocity().multiply(multiply));
                         }
                         if(arrow.getLocation().equals(arrow_loc))
@@ -580,6 +631,13 @@ public class ArrowShoot implements Listener
                     {
                         if(arrow.getLocation().equals(arrow_loc))
                         {
+                            for(Entity mob : arrow.getNearbyEntities(1,1,1))
+                            {
+                                if(mob instanceof LivingEntity)
+                                {
+                                    mob.setFireTicks(Integer.MAX_VALUE);
+                                }
+                            }
                             arrow_loc.getBlock().setType(Material.FIRE);
                             arrow.remove();
                             cancel();
@@ -640,7 +698,7 @@ public class ArrowShoot implements Listener
                             }
                         }
                     }
-                }.runTaskTimer(plugin, 5, 1);
+                }.runTaskTimer(plugin, 3, 1);
                 return true;
             }
         }
@@ -658,7 +716,8 @@ public class ArrowShoot implements Listener
                 Quivers.setQuiver(player.getUniqueId().toString(), quiver.getInventory());
                 setArrow(event, "normal", null, null, ((PotionMeta) ArrowManager.BurialArrow.getItemMeta()).getColor());
                 Arrow arrow = (Arrow) event.getProjectile();
-                BukkitTask task = new BukkitRunnable() {
+                BukkitTask task = new BukkitRunnable()
+                {
                     Location arrow_loc = event.getProjectile().getLocation();
                     @Override
                     public void run()
@@ -669,32 +728,47 @@ public class ArrowShoot implements Listener
                             {
                                 if(mob instanceof LivingEntity)
                                 {
-                                    List<Block> blocks = new ArrayList<>();
+                                    int flyhight = 0;
+                                    mob.setVelocity(new Vector(0,-1,0));
+                                    if(mob instanceof Flying)
+                                    {
+                                        while(!mob.getLocation().getWorld().getBlockAt(mob.getLocation().getBlockX(), mob.getLocation().getBlockY()-flyhight, mob.getLocation().getBlockZ()).isSolid())
+                                        {
+                                            flyhight++;
+                                        }
+                                        mob.setVelocity(mob.getVelocity().multiply(flyhight));
+                                    }
                                     for(int x=-1; x<=1; x++)
                                     {
-                                        for(int y=-3; y<=0; y++)
+                                        for(int y=(-3-flyhight); y<=(0-flyhight); y++)
                                         {
                                             for(int z=-1; z<=1; z++)
                                             {
-                                                Block block = mob.getLocation().getWorld().getBlockAt(mob.getLocation().getBlockX()+x, mob.getLocation().getBlockY()+y, mob.getLocation().getBlockZ()+z);
-                                                blocks.add(block);
-                                            }
-                                        }
-                                    }
-                                    for(Block block : blocks)
-                                    {
-                                        if(block.isSolid())
-                                        {
-                                            Material material = block.getType();
-                                            block.setType(Material.AIR);
-                                            new BukkitRunnable()
-                                            {
-                                                @Override
-                                                public void run()
+                                                Block block = mob.getLocation().getWorld().getBlockAt(mob.getLocation().getBlockX() + x, mob.getLocation().getBlockY() + y, mob.getLocation().getBlockZ() + z);
+                                                if (block.isSolid())
                                                 {
-                                                    block.setType(material);
+                                                    Material material = block.getType();
+                                                    long time;
+                                                    if (z == 0 && x == 0)
+                                                    {
+                                                        time = 22;
+                                                    }
+                                                    else
+                                                    {
+                                                        time = 20;
+                                                    }
+                                                    block.setType(Material.AIR);
+
+                                                    new BukkitRunnable()
+                                                    {
+                                                        @Override
+                                                        public void run()
+                                                        {
+                                                            block.setType(material);
+                                                        }
+                                                    }.runTaskLater(plugin, time);
                                                 }
-                                            }.runTaskLater(plugin, 3*20);
+                                            }
                                         }
                                     }
                                 }
