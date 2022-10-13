@@ -10,10 +10,10 @@ Plugin actaully contains:
   - prison arrow
   - frost arrow
   - homming arrow
-  - thunder arrow (work in progres)
-  - flame arrow (work in progres)
-  - torch arrow (work in progres)
-  - burial arrow (work in progres)
+  - thunder arrow 
+  - flame arrow 
+  - torch arrow 
+  - burial arrow 
   - deathbringer arrow (work in progres)
 - mobs health bars
 - command giving op'ed players access to inventory with all plugin items
