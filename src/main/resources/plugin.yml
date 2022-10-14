@@ -7,6 +7,8 @@ commands:
   MME_Items:
     description: Open inventory with all plugin items
     permission: op
+  Sort:
+    description: Sorting your inventory or targeted chest inventory
 
 
 

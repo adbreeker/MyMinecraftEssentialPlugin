@@ -1,6 +1,7 @@
 package myminecraftessential.myminecraftessential;
 
 import myminecraftessential.myminecraftessential.commands.MME_Items;
+import myminecraftessential.myminecraftessential.commands.Sort;
 import myminecraftessential.myminecraftessential.files.Quivers;
 import myminecraftessential.myminecraftessential.handlers.*;
 import myminecraftessential.myminecraftessential.items.ArrowManager;
@@ -18,6 +19,7 @@ public final class MyMinecraftEssential extends JavaPlugin {
 
         // files --------------------------------------------------------------------------------------------------------------
         getCommand("MME_Items").setExecutor(new MME_Items());
+        getCommand("Sort").setExecutor(new Sort());
 
         // handlers --------------------------------------------------------------------------------------------------------------
         getServer().getPluginManager().registerEvents(new ArrowShoot(this),this);
