@@ -16,4 +16,5 @@ Plugin actaully contains:
   - burial arrow 
   - deathbringer arrow (work in progres)
 - mobs health bars
-- command giving op'ed players access to inventory with all plugin items
+- command ("mme_items") giving op'ed players access to inventory with all plugin items
+- command ("sort") sorting items in chest/player inventory
